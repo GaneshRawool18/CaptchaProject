@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CAPTCHA Validation</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        refreshCaptcha();
+      });
+
+      function generateCaptcha() {
+        let chars =
+          "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        let captcha = "";
+        for (let i = 0; i < 6; i++) {
+          captcha += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        return captcha;
+      }
+
+      function refreshCaptcha() {
+        let captcha = generateCaptcha();
+        let captchaTextElement = document.getElementById("captchaText");
+        captchaTextElement.innerHTML = ""; // Clear previous captcha
+
+        for (let char of captcha) {
+          let span = document.createElement("span");
+          span.textContent = char + " "; // Adding space between characters
+          span.style.color = getRandomColor(); // Assign random color
+          span.style.fontWeight = "bold";
+          span.style.fontSize = "22px";
+          captchaTextElement.appendChild(span);
+        }
+      }
+
+      function getRandomColor() {
+        let colors = ["red", "blue", "green", "purple", "orange", "brown"];
+        return colors[Math.floor(Math.random() * colors.length)];
+      }
+
+      function validateCaptcha() {
+        let generatedCaptcha = document
+          .getElementById("captchaText")
+          .innerText.replace(/\s+/g, "")
+          .trim();
+        let userCaptcha = document.getElementById("userCaptcha").value.trim();
+
+        if (userCaptcha === "") {
+          document.getElementById("result").innerText =
+            "⚠️ Please enter the CAPTCHA.";
+          return;
+        }
+
+        if (userCaptcha === generatedCaptcha) {
+          alert("✅ CAPTCHA Matched!");
+          document.getElementById("result").innerText = "";
+        } else {
+          document.getElementById("result").innerText =
+            "❌ Incorrect CAPTCHA. Try again!";
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div class="container animate__animated animate__fadeInDown">
+      <h2>CAPTCHA Validation</h2>
+
+      <!-- Username Field -->
+      <label for="username">Username</label>
+      <input type="text" id="username" placeholder="Enter Username" required />
+
+      <!-- Email Field -->
+      <label for="email">Email</label>
+      <input type="email" id="email" placeholder="Enter Email" required />
+
+      <!-- Password Field -->
+      <label for="password">Password</label>
+      <input
+        type="password"
+        id="password"
+        placeholder="Enter Password"
+        required
+      />
+
+      <!-- CAPTCHA Section -->
+
+      <div class="captcha-box">
+        <span id="captchaText"></span>
+      </div>
+      <label for="userCaptcha">Enter CAPTCHA</label>
+      <input
+        type="text"
+        id="userCaptcha"
+        placeholder="Enter CAPTCHA"
+        required
+      />
+      <button onclick="refreshCaptcha()">🔄 Refresh CAPTCHA</button>
+      <!-- Validation Button -->
+      <button onclick="validateCaptcha()">Validate CAPTCHA</button>
+
+      <p id="result"></p>
+    </div>
+  </body>
+</html>
